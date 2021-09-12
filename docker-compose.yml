@@ -1,0 +1,50 @@
+version: '3.7'
+
+volumes:
+  pgdata:
+
+services:
+  route-postgres:
+    image: postgres:12.2
+    container_name: route-postgres
+    hostname: route-postgres
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/DB_Dockerfile
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      POSTGRES_DB: route
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/dump:/docker-entrypoint-initdb.d
+    expose:
+      - 5450
+    ports:
+      - 5450:5450
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dbuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: -p 5450
+
+  route-main: &route-main
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        INSTALL_DEV_REQUIREMENTS: "true"
+    container_name: route-main
+    environment:
+      - WAITING_DATABASE=true
+      - DB_HOST=route-postgres
+      - DB_PORT=5450
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 8500:8500
+    depends_on:
+      - route-postgres

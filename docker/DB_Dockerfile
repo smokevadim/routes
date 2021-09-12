@@ -1,0 +1,4 @@
+FROM postgres
+LABEL maintainer="Vadim Gazizov <smoke.kaliningrad@gmail.com>"
+
+COPY /tmp/dump.sql /docker-entrypoint-initdb.d/
