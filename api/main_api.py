@@ -78,5 +78,5 @@ async def post_routes(route: schemas.AddRoute, current_user: schemas.User = Depe
 
 
 @app.get("/reports/", response_model=List[schemas.Reports])
-async def get_reports(db: Session = Depends(get_db)):
+async def get_reports(current_user: schemas.User = Depends(security.get_current_user), db: Session = Depends(get_db)):
     return db.query(models.User).all()

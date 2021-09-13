@@ -1,16 +1,20 @@
+"""
+This file generate fixtures in DB.
+"""
+
 import random
 import warnings
 
 import numpy as np
 
 from api import models
-from api.db import DB, get_db
+from api.db import get_db
 
 warnings.simplefilter("ignore")
 
 
 def add_users():
-    db = DB().db
+    db = get_db().__next__()
     for i in range(3):
         db_user = models.User(username=f'user{i + 1}')
         db.add(db_user)
@@ -20,7 +24,7 @@ def add_users():
 def add_points():
     arr = np.random.rand(1_000_000, 2) * 180
     i = 1
-    db = DB().db
+    db = get_db().__next__()
     for x, y in arr:
         db_point = models.Point(
             name=f'point_{i}',
@@ -34,7 +38,7 @@ def add_points():
 
 
 def add_routes():
-    db = DB().db
+    db = get_db().__next__()
     users = db.query(models.User).all()
     points = db.query(models.Point).all()
     for i in range(10):
@@ -66,7 +70,7 @@ def try_add(f, *args, **kwargs):
         print('Adding fixtures ', f.__name__)
         f(*args, **kwargs)
     except Exception as e:
-        DB().db.rollback()
+        get_db().db.rollback()
 
 
 if __name__ == '__main__':

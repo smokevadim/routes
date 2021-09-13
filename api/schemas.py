@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from pydantic import BaseModel, HttpUrl, AnyUrl
+from pydantic import BaseModel
 
 
 class BaseOrmModel(BaseModel):

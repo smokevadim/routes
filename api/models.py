@@ -6,7 +6,6 @@ from sqlalchemy_utils import database_exists, create_database
 
 from settings import SQLALCHEMY_DATABASE_URL
 
-# engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_size=10, max_overflow=20)
 if not database_exists(engine.url):
     create_database(engine.url)
@@ -69,9 +68,11 @@ Base.metadata.create_all(bind=engine)
 
 @event.listens_for(PointInRoute, "after_insert")
 def calc_distances_in_route(mapper, connection, target: PointInRoute):
+    """Catch-signal to generate route between start point and finish point"""
+
     from api.services import get_distance
-    from api.db import DB
-    db = DB().db
+    from api.db import get_db
+    db = get_db().__next__()
     points = target.route.points_in_routes
     last_point = None
     if points:

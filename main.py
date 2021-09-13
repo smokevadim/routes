@@ -3,10 +3,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import settings
+from api.errors import catch_error
 
 
 def create_app() -> FastAPI:
     app = FastAPI(title='Routes App', debug=False)
+    app.middleware('http')(catch_error)
     return app
 
 
