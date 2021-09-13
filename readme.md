@@ -8,7 +8,6 @@ The detailed task description [in the txt-file](task.txt)
 
 ### Prerequisites 
 
-- Python >=3.9 
 - Docker (docker-compose)
 
 ### Run project
