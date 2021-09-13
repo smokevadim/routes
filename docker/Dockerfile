@@ -17,7 +17,6 @@ ENV PYTHONUNBUFFERED 1
 RUN apt update -y
 RUN apt install -y netcat
 
-# copy project
 COPY . $APP_HOME
 
 COPY docker/entrypoint.sh /entrypoint.sh
